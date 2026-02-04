@@ -1,5 +1,6 @@
 # Python virtual environment
-.venv
+.endee-venv/
+.langchain-venv/
 
 # ENvironment variables file
 .env
