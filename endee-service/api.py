@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from endee import Endee, Precision
-from .validators import (
+from validators import (
     validate_index_name, 
     validate_dimension, 
     validate_vector, 
@@ -196,6 +196,8 @@ def query_index():
                 "similarity": r.get("similarity"),
                 "distance": r.get("distance"),
                 "text": r.get("meta", {}).get("text"),
+                "description": r.get("meta", {}).get("description", ""),
+                "title": r.get("meta").get("title", "")
             }
             for r in raw_results
         ]
