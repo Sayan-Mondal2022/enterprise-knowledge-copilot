@@ -14,19 +14,19 @@ client = Endee()
 def create_index():
     data = request.get_json()
 
-    name = data.get("name")
+    index_name = data.get("index_name")
     dimension = data.get("dimension")
     space_type = data.get("space_type", "cosine")
     precision = data.get("precision", "INT8D")
 
     client.create_index(
-        name=name,
+        name=index_name,
         dimension=dimension,
         space_type=space_type,
         precision=Precision[precision]
     )
 
-    return jsonify({"status": "index created", "index_name": name})
+    return jsonify({"status": "index created", "index_name": index_name})
 
 
 # -----------------------------
@@ -34,12 +34,11 @@ def create_index():
 @app.route("/index/get", methods=["POST"])
 def get_index():
     data = request.get_json()
-    name = data.get("name")
+    index_name = data.get("index_name")
 
-    index = client.get_index(name=name)
+    index = client.get_index(name=index_name)
 
-    return jsonify({"status": "index loaded", "index_name": name})
-
+    return jsonify({"status": "index loaded", "index_name": index_name})
 
 # -----------------------------
 # Upsert Embedded Vectors

@@ -4,3 +4,6 @@
 
 # ENvironment variables file
 .env
+
+# Markdown files are stored
+data/
