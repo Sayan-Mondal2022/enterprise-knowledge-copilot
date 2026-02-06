@@ -8,3 +8,5 @@
 # Markdown files are stored
 data/
 DB-Stored-data/
+
+__pycache__/

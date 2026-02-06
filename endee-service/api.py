@@ -53,16 +53,16 @@ def create_index():
 
         # These are optional with defaults
         space_type_options = {"cosine", "l2", "ip"}
-        space_type = data.get("space_type", "cosine").lower()
-        error = validate_choice(space_type, space_type_options)
+        space_type = data.get("space_type", "cosine")
+        error = validate_choice(space_type.lower(), space_type_options)
         if error:
             return jsonify({
                 "error": error
             }), 400
 
         precision_options = {"int8d", "int16d", "float16", "float32", "binary"}
-        precision = data.get("precision", "int8d").lower()
-        error = validate_choice(precision, precision_options)
+        precision = data.get("precision", "int8d")
+        error = validate_choice(precision.lower(), precision_options)
         if error:
             return jsonify({
                 "error": error
