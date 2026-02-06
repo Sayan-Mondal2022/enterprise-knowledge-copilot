@@ -15,7 +15,10 @@ CORS(app)
 # Initialize Endee client
 client = Endee()
 
-# get_json can return None if the body is not valid JSON, so we can use a helper function to handle that case
+"""
+get_json can return None if the body is not valid JSON, 
+so we can use a helper function to handle that case
+"""
 def get_json_or_error():
     data = request.get_json(silent=True)
     if not data:
