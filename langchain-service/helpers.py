@@ -1,22 +1,16 @@
 from langchain_community.document_loaders import DirectoryLoader, PyPDFLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
-import os
 import frontmatter
 from pathlib import Path
 import re
 import markdown
 from bs4 import BeautifulSoup
-
-
-# To get the DATA_FILE_PATH
-current_dir = os.getcwd()
-parent_dir = os.path.dirname(current_dir)
-DATA_FILE_PATH = os.path.join(parent_dir, "data")
+import os
 
 
 # Function to load PDF files from a specified directory
-def load_pdf_file(file_path=DATA_FILE_PATH):
+def load_pdf_file(file_path):
     if not os.path.isdir(file_path):
         print(f"Error: The provided path '{file_path}' is not a directory.")
         return []
@@ -34,7 +28,7 @@ def load_pdf_file(file_path=DATA_FILE_PATH):
 
 # Function to load Markdown files from a specified directory
 # This function doesn't extract all the required data.
-def load_markdown_file(file_path=DATA_FILE_PATH):
+def load_markdown_file(file_path):
     if not os.path.isdir(file_path):
         print(f"Error: The provided path '{file_path}' is not a directory.")
         return []
@@ -50,10 +44,10 @@ def load_markdown_file(file_path=DATA_FILE_PATH):
     return docs
 
 # This will be the Function to load MARKDOWN FILES
-def load_md_with_metadata(path=DATA_FILE_PATH):
+def load_md_with_metadata(file_path):
     docs = []
 
-    for file in Path(path).rglob("*.md"):
+    for file in Path(file_path).rglob("*.md"):
         post = frontmatter.load(file)
 
         docs.append(
@@ -116,7 +110,7 @@ def clean_markdown(md_text: str) -> str:
         tag.decompose()
 
     # 5. Get text
-    text = soup.get_text(separator="\n")
+    text = soup.get_text(separator=" ")
 
     # 6. Remove markdown links but keep text
     text = re.sub(r"\[(.*?)\]\(.*?\)", r"\1", text)
