@@ -69,9 +69,3 @@ def hybrid_index_retriever(query: str):
         query_url=HYBRID_INDEX_QUERY_URL,
         payload=payload
     )
-
-
-vectors = embeddingModel.encode("Hello I am Sayan")
-indices, values = sparse_encoder("Hello I am Sayan")
-
-print(len(vectors), len(indices), len(values))
