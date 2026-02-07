@@ -6,7 +6,8 @@ from validators import (
     validate_dimension, 
     validate_vector, 
     validate_top_k, 
-    validate_choice
+    validate_choice,
+    validate_sparse_dimension
 )
 
 app = Flask(__name__)
@@ -28,7 +29,7 @@ def get_json_or_error():
     return data, None, None
 
 # -----------------------------
-# Create Index
+# Create Single Index
 @app.route("/index/create", methods=["POST"])
 def create_index():
     try:
@@ -106,6 +107,7 @@ def get_index():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 # -----------------------------
 # Upsert Embedded Vectors
 @app.route("/index/upsert", methods=["POST"])
@@ -127,17 +129,14 @@ def upsert_vectors():
             return jsonify({
                 "error": "embedded_vectors is required and must be a list"
             }), 400
-
+        
         index = client.get_index(name=index_name)
-
-        dimension = index.dimension
-        if dimension != len(embedded_vectors[0]["vector"]):
-            return jsonify({
-                "error": f"embedded_vectors should be of the dimensions {dimension}"
-            }), 400
-         
         index.upsert(embedded_vectors)
-        return jsonify({"status": "vectors upserted", "count": len(embedded_vectors)})
+
+        return jsonify({
+            "status": "vectors upserted", 
+            "count": len(embedded_vectors)
+        })
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -188,6 +187,192 @@ def query_index():
 
         raw_results = index.query(
             vector=vector,
+            top_k=top_k,
+            include_vectors=include_vectors
+        )
+
+        # Normalize response
+        cleaned_results = [
+            {
+                "id": r.get("id"),
+                "similarity": r.get("similarity"),
+                "distance": r.get("distance"),
+                "text": r.get("meta", {}).get("text"),
+                "description": r.get("meta", {}).get("description", ""),
+                "title": r.get("meta").get("title", "")
+            }
+            for r in raw_results
+        ]
+
+        return jsonify({
+            "index_name": index_name,
+            "top_k": top_k,
+            "results": cleaned_results
+        })
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# -----------------------------
+# HYBRID SEARCH logic Implementation
+@app.route("/index/hybrid/create", methods=["POST"])
+def create_hybrid_index():
+    try:
+        data, err_resp, err_status = get_json_or_error()
+        if err_resp is not None:
+            return err_resp, err_status
+
+        index_name = data.get("index_name")
+        error = validate_index_name(index_name)
+        if error:
+            return jsonify({
+                "error": error
+            }), 400
+
+        dimension = data.get("dimension")
+        error = validate_dimension(dimension)
+        if error:
+            return jsonify({
+                "error": error
+            }), 400
+        
+        sparse_dimension = data.get("sparse_dimension")
+        error = validate_sparse_dimension(sparse_dimension)
+        if error:
+            return jsonify({
+                "error": error
+            }), 400
+
+        # These are optional with defaults
+        space_type_options = {"cosine", "l2", "ip"}
+        space_type = data.get("space_type", "cosine")
+        error = validate_choice(space_type.lower(), space_type_options)
+        if error:
+            return jsonify({
+                "error": error
+            }), 400
+
+        precision_options = {"int8d", "int16d", "float16", "float32", "binary"}
+        precision = data.get("precision", "int8d")
+        error = validate_choice(precision.lower(), precision_options)
+        if error:
+            return jsonify({
+                "error": error
+            }), 400
+
+        client.create_index(
+            name=index_name,
+            dimension=dimension,
+            sparse_dim=sparse_dimension,
+            space_type=space_type,
+            precision=Precision[precision]
+        )
+
+        return jsonify({
+            "status": "Hybrid index created", 
+            "index_name": index_name
+        })
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# Upserting the data into HYBRID INDEX
+@app.route("/index/hybrid/upsert", methods=["POST"])
+def upsert_hybrid_vectors():
+    try:
+        data, err_resp, err_status = get_json_or_error()
+        if err_resp is not None:
+            return err_resp, err_status
+
+        index_name = data.get("index_name")
+        error = validate_index_name(index_name)
+        if error:
+            return jsonify({
+                "error": error
+            }), 400
+        
+        embedded_vectors = data.get("embedded_vectors")
+        # The dimensions will be checked at the frontend itself.
+        if not embedded_vectors or not isinstance(embedded_vectors, list):
+            return jsonify({
+                "error": "embedded_vectors is required and must be a list"
+            }), 400
+
+        # Getting the index data
+        index = client.get_index(name=index_name)
+
+        index.upsert(embedded_vectors)
+        return jsonify({"status": "vectors upserted", "count": len(embedded_vectors)})
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# Query HYBRID Index
+@app.route("/index/hybrid/query", methods=["POST"])
+def query_hybrid_index():
+    try:
+        data, err_resp, err_status = get_json_or_error()
+        if err_resp is not None:
+            return err_resp, err_status
+
+        index_name = data.get("index_name")
+        error = validate_index_name(index_name)
+        if error:
+            return jsonify({
+                "error": error
+            }), 400
+        
+        vector = data.get("vector")
+        error = validate_vector(vector)
+        if error:
+            return jsonify({
+                "error": error
+            }), 400
+        
+        index = client.get_index(name=index_name)
+        dimension = index.dimension
+        if dimension != len(vector):
+            return jsonify({
+                "error": f"vectors should be of the dimensions {dimension}"
+            }), 400
+        
+        sparse_indices, sparse_values = data.get("sparse_indices"), data.get("sparse_values")
+        if not sparse_indices or not sparse_values:
+            return jsonify({
+                "error": "sparse_indices and sparse_values are required"
+            }), 400
+
+        if len(sparse_values) != len(sparse_indices):
+            return jsonify({
+                "error": f"Sparse Indices and Values should have the same length"
+            }), 400
+        
+        sparse_dimension = index.sparse_dim
+        if max(sparse_indices) >= sparse_dimension:
+            return jsonify({
+                "error": "Sparse index out of bounds"
+            }), 400
+
+        top_k = data.get("top_k", 5)
+        error = validate_top_k(top_k)
+        if error:
+            return jsonify({
+                "error": error
+            }), 400
+
+        include_vectors = data.get("include_vectors", False)
+        if not isinstance(include_vectors, bool):
+            return jsonify({
+                "error": "include_vectors must be a Boolean Value"
+            }), 400
+
+        raw_results = index.query(
+            vector=vector,
+            sparse_indices=sparse_indices,
+            sparse_values=sparse_values,
             top_k=top_k,
             include_vectors=include_vectors
         )

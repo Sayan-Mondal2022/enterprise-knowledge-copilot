@@ -17,8 +17,18 @@ def validate_dimension(dimension):
         return "dimension is required"
     if isinstance(dimension, bool) or not isinstance(dimension, int):
         return "dimension must be an integer"
+    if not 0 < dimension <= 10000 :
+        return "dimension must be a greater than zero but less than 10000"
+    return None
+
+
+def validate_sparse_dimension(dimension):
+    if dimension is None:
+        return "Sparse dimension is required"
+    if isinstance(dimension, bool) or not isinstance(dimension, int):
+        return "Sparse dimension must be an integer"
     if dimension <= 0:
-        return "dimension must be a positive integer"
+        return "Sparse dimension must be a greater than zero"
     return None
 
 
