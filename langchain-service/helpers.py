@@ -15,19 +15,21 @@ def load_pdf_file(file_path):
         print(f"Error: The provided path '{file_path}' is not a directory.")
         return []
 
-    loader = DirectoryLoader(
-        file_path,
-        glob="*.pdf",
-        loader_cls=PyPDFLoader,
-        recursive=True,
-    )
-
-    documents = loader.load()
-    return documents
+    try:
+        loader = DirectoryLoader(
+            file_path,
+            glob="*.pdf",
+            loader_cls=PyPDFLoader,
+            recursive=True,
+        )
+        documents = loader.load()
+        return documents
+    except Exception as e:
+        print(f"Failed to load PDFs: {e}")
+        return []
 
 
 # Function to load Markdown files from a specified directory
-# This function doesn't extract all the required data.
 def load_markdown_file(file_path):
     if not os.path.isdir(file_path):
         print(f"Error: The provided path '{file_path}' is not a directory.")
@@ -48,7 +50,11 @@ def load_md_with_metadata(file_path):
     docs = []
 
     for file in Path(file_path).rglob("*.md"):
-        post = frontmatter.load(file)
+        try:
+            post = frontmatter.load(file)
+        except Exception as e:
+            print(f"Skipping {file}: {e}")
+            continue
 
         docs.append(
             Document(
@@ -72,7 +78,7 @@ def filter_to_minimal_docs(docs):
         file_name = os.path.basename(full_path)
 
         minimal_doc = Document(
-            page_content=doc.page_content,
+            page_content=clean_markdown(doc.page_content),
             metadata={
                 "title": doc.metadata.get("title"),
                 "description": doc.metadata.get("description"),
@@ -96,27 +102,31 @@ def text_split(minimal_docs):
 
 # Function to clean markdown text
 def clean_markdown(md_text: str) -> str:
-    # 1. Remove YAML front matter
-    md_text = re.sub(r"^---.*?---", "", md_text, flags=re.DOTALL)
+    try:
+        # 1. Remove YAML front matter
+        md_text = re.sub(r"^---.*?---", "", md_text, flags=re.DOTALL)
 
-    # 2. Convert markdown → HTML
-    html = markdown.markdown(md_text)
+        # 2. Convert markdown → HTML
+        html = markdown.markdown(md_text)
 
-    # 3. Parse HTML
-    soup = BeautifulSoup(html, "html.parser")
+        # 3. Parse HTML
+        soup = BeautifulSoup(html, "html.parser")
 
-    # 4. Remove unwanted tags
-    for tag in soup(["script", "style", "iframe", "img", "table"]):
-        tag.decompose()
+        # 4. Remove unwanted tags
+        for tag in soup(["script", "style", "iframe", "img", "table"]):
+            tag.decompose()
 
-    # 5. Get text
-    text = soup.get_text(separator=" ")
+        # 5. Get text
+        text = soup.get_text(separator=" ")
 
-    # 6. Remove markdown links but keep text
-    text = re.sub(r"\[(.*?)\]\(.*?\)", r"\1", text)
+        # 6. Remove markdown links but keep text
+        text = re.sub(r"\[(.*?)\]\(.*?\)", r"\1", text)
 
-    # 7. Normalize whitespace
-    text = re.sub(r"\n{2,}", "\n\n", text)
-    text = re.sub(r"[ \t]+", " ", text)
+        # 7. Normalize whitespace
+        text = re.sub(r"\n{2,}", "\n\n", text)
+        text = re.sub(r"[ \t]+", " ", text)
 
-    return text.strip()
+        return text.strip()
+    
+    except Exception:
+        return md_text.strip()
