@@ -1,0 +1,3 @@
+[submodule "endee-db"]
+	path = endee-db
+	url = https://github.com/Sayan-Mondal2022/endee.git
