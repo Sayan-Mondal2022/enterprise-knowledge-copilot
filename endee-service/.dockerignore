@@ -1,0 +1,7 @@
+__pycache__/
+.env
+.endee-venv/
+.git/
+.gitignore
+*.log
+*.ipynb
