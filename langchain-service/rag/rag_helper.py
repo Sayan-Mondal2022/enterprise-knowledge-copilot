@@ -1,10 +1,15 @@
+import os
 from langchain_core.documents import Document
 import requests
 from rag.embeddings import load_embeddingModel, sparse_encoder
 
 embeddingModel = load_embeddingModel()
 
-ENDEE_URL = "http://127.0.0.1:8000"
+ENDEE_URL = os.getenv(
+    "ENDEE_SERVICE_URL",
+    "http://localhost:8000"
+)
+
 
 SINGLE_INDEX_QUERY_URL = f"{ENDEE_URL}/index/query"
 HYBRID_INDEX_QUERY_URL = f"{ENDEE_URL}/index/hybrid/query"

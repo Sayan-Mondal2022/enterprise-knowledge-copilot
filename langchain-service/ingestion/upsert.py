@@ -1,7 +1,8 @@
+import os
 import requests
 from requests.exceptions import ConnectionError, Timeout, HTTPError
 
-ENDEE_URL = "http://127.0.0.1:8000"
+ENDEE_URL = os.getenv("ENDEE_DB_URL", "http://localhost:8080")
 
 SINGLE_INDEX_QUERY_URL = f"{ENDEE_URL}/index/upsert"
 HYBRID_INDEX_QUERY_URL = f"{ENDEE_URL}/index/hybrid/upsert"

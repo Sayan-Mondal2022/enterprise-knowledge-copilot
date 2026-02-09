@@ -1,0 +1,10 @@
+__pycache__/
+.env
+.langchain-venv/
+.git/
+.gitignore
+*.log
+data/
+models/
+.cache/
+*.ipynb
