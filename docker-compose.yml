@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  endee-db:
+    build:
+      context: ./endee-db
+      dockerfile: infra/Dockerfile
+    container_name: endee-db
+    ports:
+      - "8080:8080"
+    networks:
+      - copilot-net
+
+  endee-service:
+    build:
+      context: ./endee-service
+    container_name: endee-service
+    ports:
+      - "8000:8000"
+    depends_on:
+      - endee-db
+    environment:
+      - ENDEE_DB_URL=http://endee-db:8080
+    networks:
+      - copilot-net
+
+  langchain-service:
+    build:
+      context: ./langchain-service
+    container_name: langchain-service
+    ports:
+      - "8501:8501"
+    depends_on:
+      - endee-service
+    environment:
+      - ENDEE_SERVICE_URL=http://endee-service:8000
+    networks:
+      - copilot-net
+
+networks:
+  copilot-net:
+    driver: bridge
