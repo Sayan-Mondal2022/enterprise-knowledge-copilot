@@ -5,26 +5,25 @@ This project implements an Enterprise Knowledge Base Copilot that enables employ
 It uses semantic search powered by a **vector database** and **Retrieval-Augmented Generation (RAG)** to return accurate, step-by-step answers grounded in organizational knowledge such as policies, SOPs, and technical documentation.
 
 
-
 ## 🧠 Project Overview
 
-Enterprise Knowledge Copilot is a **Retrieval-Augmented Generation (RAG)** system that:
+**Enterprise Knowledge Copilot** is a modular **RAG System** that transforms internal documents into an intelligent knowledge base.
 
-- Stores enterprise documents in a **hybrid vector database**
-- Performs **semantic + keyword-aware retrieval**
-- Uses **LLMs to generate grounded, contextual answers**
-- Supports **Normal** and **Pro** query modes for cost-performance control
+**Core Capabilities:**
+* **Hybrid Storage Engine:** Utilizes a custom vector database to store both **Dense** (semantic) and **Sparse** (keyword) embeddings.
+* **Dual-Mode Retrieval:**
+    * **Normal Mode:** Optimized for fast, semantic Q&A.
+    * **Pro Mode:** Enhances accuracy for technical queries using keyword-aware retrieval.
+* **Grounded Generation:** Uses LLMs to synthesize answers strictly from retrieved context, minimizing hallucinations.
+* **Decoupled Architecture:** Built as independent microservices (Vector DB + RAG Engine) for better maintainability.
 
-The architecture follows a **microservices approach**, separating vector storage from LLM reasoning.
+## ✨ Key Features
 
-
-## ✨ Features
-
-- 🔍 **Hybrid Retrieval** (Dense + Sparse)
-- 🧠 **Custom Open-Source Vector DB (Endee)**
-- 🔗 **LangChain-based RAG Pipeline**
-- ⚡ Fast similarity search with indexing
-- 🧩 Modular services (DB + LLM decoupled)
+- 🔍 **Advanced Hybrid Retrieval**: Combines **Dense Vectors** (semantic meaning) with **Sparse Vectors** (SPLADE keyword matching) for high-precision search.
+- 🧠 **Powered by Endee**: Built on a custom, high-performance **Open-Source Vector Database** designed for efficient embedding storage.
+- 🔗 **Robust RAG Pipeline**: Orchestrated via **LangChain** to seamlessly retrieve context and generate grounded LLM responses.
+- ⚡ **High-Performance Indexing**: Optimized for ultra-fast similarity search, ensuring low-latency query responses.
+- 🧩 **Microservices Architecture**: Fully decoupled **Vector DB** and **LLM Reasoning** layers for better scalability and maintenance.
 
 
 ## 🛠 Tech Stack
