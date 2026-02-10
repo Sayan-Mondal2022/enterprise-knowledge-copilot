@@ -18,7 +18,6 @@ Enterprise Knowledge Copilot is a **Retrieval-Augmented Generation (RAG)** syste
 The architecture follows a **microservices approach**, separating vector storage from LLM reasoning.
 
 
-
 ## ✨ Features
 
 - 🔍 **Hybrid Retrieval** (Dense + Sparse)
@@ -26,7 +25,6 @@ The architecture follows a **microservices approach**, separating vector storage
 - 🔗 **LangChain-based RAG Pipeline**
 - ⚡ Fast similarity search with indexing
 - 🧩 Modular services (DB + LLM decoupled)
-
 
 
 ## 🛠 Tech Stack
@@ -55,21 +53,21 @@ Will be adding a image
 
 ## ▶️ Local Installation Setup
 
-### 1️⃣ Clone the Repository
+**1️⃣ Clone the Repository**
 
 ```bash
 git clone https://github.com/Sayan-Mondal2022/enterprise-knowledge-copilot.git
 cd enterprise-knowledge-copilot
 ```
 
-### 2️⃣ Environment Configuration
+**2️⃣ Environment Configuration**
 
 ```bash
 # Required for the LLM (LangChain Service)
 GROQ_API_KEY=your_groq_api_key_here
 ```
 
-### 🚀 Option A: Run with Docker (When you already have docker)
+**🚀 Option A: Run with Docker (When you already have docker)**
 
 ```bash
 docker-compose up --build
@@ -81,9 +79,14 @@ Services will be available at:
 - Endee Middleware API: `http://localhost:8000`
 - Endee Vector DB: `http://localhost:8080`
 
-### 🛠 Option B: Manual Setup
+**🛠 Option B: Manual Setup**
 
-> Note: You must still run the `endee-db` core via Docker or have it installed locally, as it is a compiled service.
+If you prefer to run the Python services locally for development, follow these steps.
+
+> **Note:** You must still run the `endee-db` core via Docker or have it installed locally, as it is a compiled service.
+> 
+> For instructions on installing the core DB locally, refer to the main repository:  
+> 👉 **[https://github.com/endee-io/endee.git](https://github.com/endee-io/endee.git)**
 
 **1. Start the Vector Database**
 
