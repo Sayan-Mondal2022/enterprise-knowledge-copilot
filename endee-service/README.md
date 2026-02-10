@@ -185,3 +185,56 @@ Both the **Dense** and **Hybrid** query endpoints return the same JSON structure
 | **`results[].title`** | `string` | Title of the source document (from metadata). |
 | **`results[].description`** | `string` | Brief summary or description of the document (from metadata). |
 | **`results[].distance`** | `float` or `null` | The distance metric (if applicable for the chosen metric type). |
+
+
+## 📂 Project Structure
+
+```bash
+endee-service/
+├── api.py              # Main Flask application entry point
+├── validators.py       # Input validation logic (dimensions, types, etc.)
+├── requirements.txt    # Python dependencies
+├── Dockerfile          # Docker container configuration
+├── .dockerignore       # For docker to ignore it while building the image
+└── README.md           # Documentation
+```
+
+## ⚠️ Error Handling
+
+The API returns standard HTTP status codes to indicate success or failure.
+
+| Status Code | Description | Common Causes |
+| :--- | :--- | :--- |
+| **200 OK** | Success | Request was processed successfully. |
+| **400 Bad Request** | Validation Error | Missing fields, invalid JSON, dimension mismatch, or invalid index name. |
+| **500 Internal Error** | Server Error | Unexpected failures in the Vector DB or backend logic. |
+
+**Example Error Response:**
+```json
+{
+  "error": "dimension must be an integer"
+}
+```
+
+## 🧪 Quick Test
+
+You can test if the service is running using `curl` or Postman.
+
+**Check Status (Try creating a test index):**
+```bash
+curl -X POST http://localhost:8000/index/create \
+  -H "Content-Type: application/json" \
+  -d '{
+    "index_name": "test_index",
+    "dimension": 384
+  }'
+```
+
+## ❤️ Show Your Support
+
+If this middleware service helped you build your RAG pipeline, please consider giving the main repository a ⭐ **Star**!
+
+* **Main Repo**: [Enterprise Knowledge Copilot](https://github.com/Sayan-Mondal2022/enterprise-knowledge-copilot)
+* **Report Bugs**: If you find a bug in the API, please open an issue.
+
+Happy Coding! 🚀
