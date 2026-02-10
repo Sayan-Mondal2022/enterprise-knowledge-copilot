@@ -17,6 +17,30 @@ It uses semantic search powered by a **vector database** and **Retrieval-Augment
 * **Grounded Generation:** Uses LLMs to synthesize answers strictly from retrieved context, minimizing hallucinations.
 * **Decoupled Architecture:** Built as independent microservices (Vector DB + RAG Engine) for better maintainability.
 
+## 📸 Demo Screenshots
+
+Here is a glimpse of the Enterprise Knowledge Copilot in action.
+
+### 🤖 Chat Interface
+<img width="1919" height="883" alt="image" src="https://github.com/user-attachments/assets/b40a5d50-aa46-4614-8661-7f49c3fecf11" />
+
+### Normal Mode (Dense Search)
+<img width="1914" height="876" alt="image" src="https://github.com/user-attachments/assets/33faa8af-1abf-4c40-bb52-a2c652a30da9" /> \
+*Fast, semantic answers for general queries.*
+
+### Pro Mode (Hybrid Search)
+<img width="1919" height="869" alt="image" src="https://github.com/user-attachments/assets/d4f07ac9-5699-447c-bc48-b9567ffb78ce" /> \
+*High-precision answers using SPLADE for technical terms.*
+
+### ⚙️ Document Ingestion
+**Upload & Ingest** \
+<img width="468" height="596" alt="image" src="https://github.com/user-attachments/assets/768bf5ed-eecd-4f18-8b6b-bd572bf446b7" /> \
+*Simple sidebar UI to upload PDF/Markdown files.*
+
+### 📦 Vector Database (Endee)
+<img width="1920" height="875" alt="image" src="https://github.com/user-attachments/assets/5a07efd6-b96b-4bde-9524-d9aabc64bf57" /> \
+*Live status of the custom Endee Vector DB handling of SIngle and Hybrid indices.*
+
 ## ✨ Key Features
 
 - 🔍 **Advanced Hybrid Retrieval**: Combines **Dense Vectors** (semantic meaning) with **Sparse Vectors** (SPLADE keyword matching) for high-precision search.
