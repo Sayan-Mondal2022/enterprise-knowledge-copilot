@@ -9,12 +9,18 @@ from validators import (
     validate_choice,
     validate_sparse_dimension
 )
+import os
 
 app = Flask(__name__)
 CORS(app)
 
-# Initialize Endee client
+db_url = os.getenv("ENDEE_DB_URL", "http://localhost:8080")
 client = Endee()
+client.set_base_url(f"{db_url}/api/v1")
+
+
+# Initialize Endee client
+# client = Endee()
 
 """
 get_json can return None if the body is not valid JSON, 
@@ -403,4 +409,4 @@ def query_hybrid_index():
 # -----------------------------
 # Run Server
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=8000, debug=True)
+    app.run(host="0.0.0.0", port=8000)
