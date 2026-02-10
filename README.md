@@ -21,9 +21,6 @@ It uses semantic search powered by a **vector database** and **Retrieval-Augment
 
 Here is a glimpse of the Enterprise Knowledge Copilot in action.
 
-### 🤖 Chat Interface
-<img width="1919" height="883" alt="image" src="https://github.com/user-attachments/assets/b40a5d50-aa46-4614-8661-7f49c3fecf11" />
-
 ### Normal Mode (Dense Search)
 <img width="1914" height="876" alt="image" src="https://github.com/user-attachments/assets/33faa8af-1abf-4c40-bb52-a2c652a30da9" /> \
 *Fast, semantic answers for general queries.*
