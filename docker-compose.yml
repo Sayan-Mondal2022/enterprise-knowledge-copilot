@@ -1,17 +1,20 @@
-version: "3.9"
-
 services:
   endee-db:
     image: enterprise-knowledge-copilot-endee-db:latest
-    container_name: endee-db
+    build:
+      context: ./endee-db
+      dockerfile: infra/Dockerfile
+      args:
+        BUILD_ARCH: avx2
     ports:
       - "8080:8080"
     networks:
       - copilot-net
-      
+
   endee-service:
     image: enterprise-knowledge-copilot-endee-service:latest
-    container_name: endee-service
+    build:
+      context: ./endee-service
     ports:
       - "8000:8000"
     depends_on:
@@ -23,7 +26,8 @@ services:
 
   langchain-service:
     image: enterprise-knowledge-copilot-langchain-service:latest
-    container_name: langchain-service
+    build:
+      context: ./langchain-service
     ports:
       - "8501:8501"
     env_file:
