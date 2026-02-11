@@ -27,22 +27,23 @@ prompt = ChatPromptTemplate.from_messages([
     ("human", "{input}")
 ])
 
+def format_docs(docs):
+    return "\n\n".join(d.page_content for d in docs)
+
 # Rag pipeline:
 single_rag_chain = (
-    {
-        "context": single_retriever | (lambda docs: "\n\n".join(d.page_content for d in docs)),
-        "input": RunnablePassthrough()
-    }
+    RunnablePassthrough.assign(
+        context=(lambda x: format_docs(single_retriever.invoke(x["input"])))
+    )
     | prompt
     | chatModel
     | StrOutputParser()
 )
 
 hybrid_rag_chain = (
-    {
-        "context": hybrid_retriever | (lambda docs: "\n\n".join(d.page_content for d in docs)),
-        "input": RunnablePassthrough()
-    }
+    RunnablePassthrough.assign(
+        context=(lambda x: format_docs(hybrid_retriever.invoke(x["input"])))
+    )
     | prompt
     | chatModel
     | StrOutputParser()

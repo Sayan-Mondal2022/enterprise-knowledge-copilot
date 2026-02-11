@@ -26,13 +26,32 @@ from rag.rag_pipeline import (
 # -------------------------------
 # PAGE CONFIG
 st.set_page_config(
-    page_title="GitLab Copilot",
+    page_title="Enterprise Copilot",
     page_icon="🤖",
     layout="centered"
 )
 
-st.title("🤖 GitLab Copilot")
-st.caption("Your internal knowledge assistant")
+@st.dialog("📖 How to use Enterprise Knowledge Copilot", width="large")
+def docs_dialog():
+    st.markdown("""
+    **Welcome to the Enterprise Knowledge Copilot!** 🤖
+    
+    This intelligent assistant helps you instantly find answers hidden within your company's internal documentation, policies, and technical guides.
+
+    ### 🔍 Choose Your Search Mode
+    * **Normal Mode (Semantic Search):** Best for general questions, summaries, and understanding broad concepts. It searches based on the *meaning* of your query.
+    * **Pro Mode (Hybrid Search):** Best for highly technical questions, specific error codes, acronyms, or exact IDs. It combines semantic understanding with exact keyword matching (SPLADE) for maximum precision.
+
+    ### 📥 How to Add Knowledge (Ingestion)
+    1. **Select Files:** Use the uploader in the sidebar to choose your documents (`.pdf` or `.md` formats are supported).
+    2. **Ingest:** Click **'Ingest Documents'**. The system will automatically read, clean, and securely store the knowledge in our custom vector database.
+    3. *Note: The Copilot will only answer based on the documents you have ingested.*
+
+    ### 💡 Tips for Best Results
+    * **Be Specific:** Instead of asking *"tell me about leaves"*, ask *"What is the policy for remote work annual leave?"*
+    * **Formatting:** You can ask the bot to reply in bullet points, or provide step-by-step instructions.
+    * **Verify:** While the Copilot uses Retrieval-Augmented Generation (RAG) to ground its answers in your documents, it is always good practice to double-check critical information.
+    """)
 
 # -------------------------------
 # SESSION STATE
@@ -42,10 +61,68 @@ if "messages" not in st.session_state:
 if "mode" not in st.session_state:
     st.session_state.mode = "Normal"
 
+if "company_name" not in st.session_state:
+    st.session_state.company_name = "Enterprise Inc."
+
+if "bot_name" not in st.session_state:
+    st.session_state.bot_name = "Enterprise Copilot"
+
+if "custom_prompt" not in st.session_state:
+    st.session_state.custom_prompt = "If a user asks whether they can upload a Document, respond with 'Yes, you can upload a PDF or Markdown Document.'"
+
+
+@st.dialog("⚙️ Configure Chatbot")
+def configure_bot_dialog():
+    st.markdown("Customize the assistant's persona and instructions.")
+    
+    # Input fields pre-filled with current session state values
+    new_company = st.text_input("Company Name", value=st.session_state.company_name)
+    new_bot = st.text_input("Bot Name", value=st.session_state.bot_name)
+    new_prompt = st.text_area(
+        "Additional Instructions (Optional)", 
+        value=st.session_state.custom_prompt,
+        height=100
+    )
+    
+    # Save button
+    if st.button("Save Configuration", type="primary", use_container_width=True):
+        st.session_state.company_name = new_company
+        st.session_state.bot_name = new_bot
+        st.session_state.custom_prompt = new_prompt
+        st.rerun()
+
+# WELCOME MESSAGE
+if len(st.session_state.messages) == 0:
+    st.markdown("""
+    <div style="text-align: center; padding: 2rem;">
+        <h2>👋 Welcome to Enterprise Copilot!</h2>
+        <p style="font-size: 1.1rem; color: #555;">Your intelligent assistant for navigating internal enterprise knowledge.</p>
+    </div>
+    
+    **How to get started:**
+    1. 📄 **Upload Documents:** Use the sidebar to ingest your PDFs or Markdown files.
+    2. ⚙️ **Select Mode:** Choose **Normal** for general queries or **Pro** for technical/keyword-heavy searches.
+    3. 💬 **Start Chatting:** Ask your question in the text box below!
+    
+    ---
+    """, unsafe_allow_html=True)
+else:
+    st.title(f"🤖 {st.session_state.bot_name}")
+
 # -------------------------------
 # SIDEBAR
 with st.sidebar:
     st.header("⚙️ Settings")
+
+    # --- NEW DOCS SECTION ---
+    if st.button("ℹ️ How to use this Copilot", use_container_width=True):
+        docs_dialog()
+    
+    # --- NEW: Button to open Config Dialog ---
+    if st.button("🤖 Configure Chatbot", use_container_width=True):
+        configure_bot_dialog()
+
+    st.divider()
 
     st.session_state.mode = st.radio(
         "Choose model",
@@ -88,6 +165,8 @@ with st.sidebar:
 
         st.success("✅ Documents ingested successfully")
 
+
+
 # -------------------------------
 # CHAT DISPLAY
 for msg in st.session_state.messages:
@@ -111,10 +190,18 @@ if user_input:
     # Bot response
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
+
+            invoke_payload = {
+                "input": user_input,
+                "company_name": st.session_state.company_name,
+                "bot_name": st.session_state.bot_name,
+                "custom_prompt": st.session_state.custom_prompt
+            }
+
             if st.session_state.mode == "Normal":
-                response = single_rag_chain.invoke(user_input)
+                response = single_rag_chain.invoke(invoke_payload)
             else:
-                response = hybrid_rag_chain.invoke(user_input)
+                response = hybrid_rag_chain.invoke(invoke_payload)
 
         st.markdown(response)
 
