@@ -7,6 +7,7 @@ This service handles the complete **RAG (Retrieval-Augmented Generation)** pipel
 ## ✨ Key Features
 
 * **🤖 Interactive Chat Interface**: A user-friendly chat UI powered by **Streamlit**.
+* **⚙️ Dynamic Persona Configuration**: Customize the bot's name, company name, and system prompts directly from the UI—no code changes required.
 * **📂 Document Ingestion**:
     * Supports **PDF** and **Markdown** file uploads.
     * Automatically cleans, preprocesses, and chunks text.
@@ -46,23 +47,24 @@ This service handles the complete **RAG (Retrieval-Augmented Generation)** pipel
 ```bash
 langchain-service/
 ├── ingestion/
-│   ├── chunking.py         # Logic for splitting text into chunks
-│   ├── loaders.py          # Handles loading of PDF and Markdown files
-│   ├── preprocessing.py    # Cleans and normalizes text data
-│   ├── upsert.py           # Manages sending vectors to the Endee service
-│   └── vectorize_data.py   # Converts text chunks into vector embeddings
+│   ├── chunking.py             # Logic for splitting text into chunks
+│   ├── loaders.py              # Handles loading of PDF and Markdown files
+│   ├── preprocessing.py        # Cleans and normalizes text data
+│   ├── upsert.py               # Manages sending vectors to the Endee service
+│   └── vectorize_data.py       # Converts text chunks into vector embeddings
 ├── rag/
-│   ├── embeddings.py       # Loads embedding models (Dense & SPLADE)
-│   ├── prompts.py          # Stores system prompts for the LLM
-│   ├── rag_helper.py       # Helper functions for retrieval logic
-│   └── rag_pipeline.py     # Defines the main RAG chain (Retrieval + Generation)
-├── .dockerignore           # Files to exclude from Docker build
-├── Dockerfile              # Docker configuration for the service
-├── README.md               # README file
-├── app.py                  # Main Streamlit application entry point
-├── requirements.txt        # Python dependencies
-├── testing.ipynb           # Notebook for testing single index functionality
-└── testing_hybrid_db.ipynb # Notebook for testing hybrid index functionality
+│   ├── embeddings.py           # Loads embedding models (Dense & SPLADE)
+│   ├── prompts.py              # Stores system prompts for the LLM
+│   ├── rag_helper.py           # Helper functions for retrieval logic
+│   └── rag_pipeline.py         # Defines the main RAG chain (Retrieval + Generation)
+├── notebooks/
+│   ├── testing.ipynb           # Notebook for testing single index functionality
+│   ├── testing_hybrid_db.ipynb # Notebook for testing hybrid index functionality
+├── .dockerignore               # Files to exclude from Docker build
+├── Dockerfile                  # Docker configuration for the service
+├── README.md                   # README file
+├── app.py                      # Main Streamlit application entry point
+└── requirements.txt            # Python dependencies 
 ```
 
 ## 📖 Usage Guide
@@ -81,13 +83,20 @@ langchain-service/
 2.  Type your question in the chat input (e.g., *"What is the company policy on remote work?"*).
 3.  The assistant will retrieve relevant context and generate an answer.
 
+### 3. Customizing the Bot
+1. Open the **sidebar** on the left.
+2. Click **"🤖 Configure Chatbot"**.
+3. A dialog will appear where you can set the **Company Name**, **Bot Name**, and provide **Additional Instructions** (e.g., *"Always reply in French"*).
+4. Click **Save Configuration** to instantly update the assistant's persona.
+
+
 ## ⚠️ Troubleshooting
 
 | Error | Solution |
 | :--- | :--- |
 | **`ConnectionError` / `Backend service not reachable`** | Ensure `endee-service` is running and `ENDEE_SERVICE_URL` is set correctly in `.env`. |
 | **`GROQ_API_KEY not found`** | Make sure you created the `.env` file and added your key. |
-| **Ingestion Fails** | Check if the files are valid PDFs/Markdown. Ensure the backend DB is up. |
+| **`Ingestion Fails`** | Check if the files are valid PDFs/Markdown. Ensure the backend DB is up. |
 
 ## ⚙️ Advanced Configuration
 
@@ -99,18 +108,13 @@ You can configure the service using the following environment variables in your 
 | **`GROQ_API_KEY`** | **Required**. API Key for Groq Cloud (LLM provider). | `None` |
 | **`ENDEE_SERVICE_URL`** | URL of the running Endee Middleware Service. | `http://localhost:8000` |
 
-### 🤖 Customizing the Persona
-By default, the bot is configured as **"GitLab Copilot"**. To change this for your own organization:
 
-1. Open `rag/prompts.py`.
-2. Edit the `system_prompt` string:
-   ```python
-   system_prompt = """
-   You are a professional assistant for [YOUR COMPANY NAME].
-   Your name is '[YOUR BOT NAME]'...
-   """
-   ```
-3. Restart the Streamlit app to apply changes.
+### 🛠️ Changing Default Personas in Code
+
+If you want to permanently change the default starting persona so you don't have to configure it in the UI every time you restart the app:
+
+1. Open `app.py`.
+2. Locate the **SESSION STATE** block and update the initial values for `company_name`, `bot_name`, or `custom_prompt`.
 
 ### 🧩 Ingestion Details
 
