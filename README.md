@@ -17,6 +17,17 @@ It uses semantic search powered by a **vector database** and **Retrieval-Augment
 * **Grounded Generation:** Uses LLMs to synthesize answers strictly from retrieved context, minimizing hallucinations.
 * **Decoupled Architecture:** Built as independent microservices (Vector DB + RAG Engine) for better maintainability.
 
+## 🚀 Live Demo
+
+The project is live and can be accessed at the following link:
+
+**[Enterprise Knowledge Copilot Live Demo](https://sayansm.dev/enterprise-copilot)**
+
+### 🛡️ Deployment & Security
+* **SSL/TLS Encryption:** Secured with Let's Encrypt SSL on a `.dev` domain, ensuring all data transmission is encrypted.
+* **Architecture:** Orchestrated via **Docker Compose** with a multi-service setup.
+* **Network Security:** Only the frontend is exposed via an **Nginx** reverse proxy, keeping the Flask backend and Vector Database protected within a private internal network.
+
 ## 📸 Demo Screenshots
 
 Here is a glimpse of the Enterprise Knowledge Copilot in action.
