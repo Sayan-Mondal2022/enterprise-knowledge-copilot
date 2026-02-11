@@ -36,6 +36,7 @@ services:
       - endee-service
     environment:
       - ENDEE_SERVICE_URL=http://endee-service:8000
+      - STREAMLIT_SERVER_BASE_URL_PATH=/enterprise-copilot
     networks:
       - copilot-net
 
