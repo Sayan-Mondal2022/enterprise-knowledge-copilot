@@ -21,13 +21,21 @@ It uses semantic search powered by a **vector database** and **Retrieval-Augment
 
 Here is a glimpse of the Enterprise Knowledge Copilot in action.
 
+### Landing page
+*The clean and intuitive chat interface where users can upload documents and interact with the Copilot.*
+<img width="1913" height="886" alt="image" src="https://github.com/user-attachments/assets/6aa44bc5-e6ad-467f-af9a-78cbeba6f7fb" />
+
+### Configuring the Chatbot
+*A dynamic configuration dialog to instantly customize the assistant's name, company, and behavioral instructions.*
+<img width="593" height="558" alt="image" src="https://github.com/user-attachments/assets/f7ecac8b-74c8-4fb9-863e-8a84c764dd00" />
+
 ### Normal Mode (Dense Search)
-<img width="1914" height="876" alt="image" src="https://github.com/user-attachments/assets/33faa8af-1abf-4c40-bb52-a2c652a30da9" /> \
 *Fast, semantic answers for general queries.*
+<img width="1914" height="876" alt="image" src="https://github.com/user-attachments/assets/33faa8af-1abf-4c40-bb52-a2c652a30da9" /> \
 
 ### Pro Mode (Hybrid Search)
-<img width="1919" height="869" alt="image" src="https://github.com/user-attachments/assets/d4f07ac9-5699-447c-bc48-b9567ffb78ce" /> \
 *High-precision answers using SPLADE for technical terms.*
+<img width="1919" height="869" alt="image" src="https://github.com/user-attachments/assets/d4f07ac9-5699-447c-bc48-b9567ffb78ce" /> \
 
 ### ⚙️ Document Ingestion
 **Upload & Ingest** \
@@ -35,14 +43,16 @@ Here is a glimpse of the Enterprise Knowledge Copilot in action.
 *Simple sidebar UI to upload PDF/Markdown files.*
 
 ### 📦 Vector Database (Endee)
-<img width="1920" height="875" alt="image" src="https://github.com/user-attachments/assets/5a07efd6-b96b-4bde-9524-d9aabc64bf57" /> \
 *Live status of the custom Endee Vector DB handling of SIngle and Hybrid indices.*
+<img width="1920" height="875" alt="image" src="https://github.com/user-attachments/assets/5a07efd6-b96b-4bde-9524-d9aabc64bf57" /> \
 
 ## ✨ Key Features
 
 - 🔍 **Advanced Hybrid Retrieval**: Combines **Dense Vectors** (semantic meaning) with **Sparse Vectors** (SPLADE keyword matching) for high-precision search.
 - 🧠 **Powered by Endee**: Built on a custom, high-performance **Open-Source Vector Database** designed for efficient embedding storage.
 - 🔗 **Robust RAG Pipeline**: Orchestrated via **LangChain** to seamlessly retrieve context and generate grounded LLM responses.
+- 🤖 **Interactive Chat UI**: A user-friendly frontend built with **Streamlit** that makes document ingestion and querying effortless.
+- ⚙️ **Dynamic Persona Configuration**: Instantly customize the assistant's name, company affiliation, and behavioral instructions directly from the UI—no code changes required.
 - ⚡ **High-Performance Indexing**: Optimized for ultra-fast similarity search, ensuring low-latency query responses.
 - 🧩 **Microservices Architecture**: Fully decoupled **Vector DB** and **LLM Reasoning** layers for better scalability and maintenance.
 
@@ -173,6 +183,8 @@ This project would not have been possible without the amazing open-source commun
 * **[Streamlit](https://streamlit.io/)**: For enabling the rapid development of the interactive frontend interface.
 * **[Hugging Face](https://huggingface.co/) & [Sentence Transformers](https://www.sbert.net/)**: For the state-of-the-art embedding models and transformers.
 * **[Naver Labs Europe](https://europe.naverlabs.com/)**: For the **SPLADE** model architecture used for efficient sparse retrieval.
+* **[GitLab Public Handbook](https://handbook.gitlab.com/)**: A special thanks to GitLab for maintaining an open-source company handbook. It served as an incredibly rich, real-world dataset for testing the document ingestion, hybrid retrieval, and RAG capabilities of this project. 
+* **Open Source Community**: Thanks to the maintainers of LangChain, Streamlit, and sentence-transformers for building the tools that made this Copilot possible.
 
 ## ❤️ Thank You
 
