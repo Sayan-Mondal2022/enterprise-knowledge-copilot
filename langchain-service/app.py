@@ -15,6 +15,7 @@ from ingestion.upsert import (
     upsert_single_index,
     upsert_hybrid_index
 )
+from rag.rag_helper import create_load_dbs
 
 # -------------------------------
 # RAG PIPELINE
@@ -22,6 +23,11 @@ from rag.rag_pipeline import (
     single_rag_chain, 
     hybrid_rag_chain
 )
+
+@st.cache_resource
+def startup_logic():
+    print("startup_logic executed")
+    create_load_dbs()
 
 # -------------------------------
 # PAGE CONFIG
@@ -173,8 +179,16 @@ for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])  # preserves markdown styling
 
+
 # -------------------------------
 # CHAT INPUT
+
+# 1. Show a loading animation and initialize DBs before rendering the input
+if "db_initialized" not in st.session_state:
+    with st.spinner("Initializing Vector Databases... Please wait."):
+        create_load_dbs()
+    st.session_state.db_initialized = True
+
 user_input = st.chat_input("Ask something...")
 
 if user_input:
